@@ -215,6 +215,16 @@ FFIRaylib >> runDev [
  ] fork.
 ]
 
+{ #category : #running }
+FFIRaylib >> runProd [ 
+ "Run directly in this process, untiil quit" 
+[ self windowShouldClose ] whileFalse: [ 
+		scene update: self.
+		scene doDraw: self.
+] 
+
+]
+
 { #category : #accessing }
 FFIRaylib >> scene: anRbScene [ 
  scene := anRbScene 
