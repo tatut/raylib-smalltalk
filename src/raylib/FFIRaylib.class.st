@@ -1,6 +1,10 @@
 Class {
 	#name : #FFIRaylib,
 	#superclass : #FFILibrary,
+	#instVars : [
+		'scene',
+		'runProcess'
+	],
 	#category : #raylib
 }
 
@@ -44,8 +48,23 @@ FFIRaylib >> endDrawing [
 ]
 
 { #category : #'as yet unclassified' }
+FFIRaylib >> fps [
+^ self ffiCall: #(int GetFPS(void))
+]
+
+{ #category : #'as yet unclassified' }
+FFIRaylib >> frameTime [ 
+ ^ self ffiCall: #(float GetFrameTime(void))
+]
+
+{ #category : #'as yet unclassified' }
 FFIRaylib >> initWindowWidth: widthPx height: heightPx titled: title [ 
   self ffiCall: #(void InitWindow(int widthPx, int heightPx, const char *title))
+]
+
+{ #category : #initialization }
+FFIRaylib >> initialize [ 
+  scene := RbNullScene new.
 ]
 
 { #category : #testing }
@@ -139,6 +158,11 @@ FFIRaylib >> monitorWidth: monitor [
 ]
 
 { #category : #'as yet unclassified' }
+FFIRaylib >> pollInputEvents [ 
+  self ffiCall: #(void PollInputEvents(void))
+]
+
+{ #category : #'as yet unclassified' }
 FFIRaylib >> renderHeight [ 
  ^ self ffiCall: #(int GetRenderHeight(void))
 ]
@@ -158,6 +182,44 @@ FFIRaylib >> restoreWindow [
  self ffiCall: #(void RestoreWindow(void))
 ]
 
+{ #category : #running }
+FFIRaylib >> run [ 
+ runProcess ifNotNil: [ runProcess terminate ].
+ runProcess := [ 
+	[ self windowShouldClose ] whileFalse: [ 
+		scene update: self.
+		scene doDraw: self.
+	] 
+ ] fork.
+]
+
+{ #category : #running }
+FFIRaylib >> runDev [ 
+ runProcess ifNotNil: [ runProcess terminate ].
+ runProcess := [ 
+	[ self windowShouldClose ] whileFalse: [ 
+	   | dur sleep | 
+	   dur := [ 
+			self pollInputEvents.
+			scene update: self.
+			scene draw: self.
+			self swapScreenBuffer.
+	   ] durationToRun asMilliSeconds.
+      sleep := 16 - dur.
+      sleep < 0 
+       ifTrue: [ 
+			Transcript show: 'Scene ', scene printString, ' took more than 16ms for frame!'; cr. 
+			sleep := 100 ].
+      (Delay forMilliseconds: sleep) wait.
+	] 
+ ] fork.
+]
+
+{ #category : #accessing }
+FFIRaylib >> scene: anRbScene [ 
+ scene := anRbScene 
+]
+
 { #category : #'as yet unclassified' }
 FFIRaylib >> screenHeight [
  ^ self ffiCall: #(int GetScreenHeight(void))
@@ -174,9 +236,20 @@ FFIRaylib >> screenWidth [
 ]
 
 { #category : #'as yet unclassified' }
+FFIRaylib >> swapScreenBuffer [  
+  self ffiCall: #(void SwapScreenBuffer(void))
+]
+
+{ #category : #'as yet unclassified' }
 FFIRaylib >> targetFPS: fps [
  self ffiCall: #(void SetTargetFPS(int fps))
 
+]
+
+{ #category : #'debugging actions' }
+FFIRaylib >> terminate [ 
+  "Stop running the scene process, if any."
+  runProcess ifNotNil: [ runProcess terminate ]
 ]
 
 { #category : #testing }
