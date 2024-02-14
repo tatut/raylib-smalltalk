@@ -23,6 +23,12 @@ RbVector2 class >> x: x y: y [
  ^ self new x: x; y: y
 ]
 
+{ #category : #arithmetic }
+RbVector2 >> + anRbVector [ 
+ "Return a new RbVector2 that is the sum of self and given vector"
+ ^ self class x: (self x + anRbVector x) y: (self y + anRbVector y)
+]
+
 { #category : #adding }
 RbVector2 >> add: anRbVector2 [
  "Add the given vector to this one"

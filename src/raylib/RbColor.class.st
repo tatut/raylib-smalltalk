@@ -20,6 +20,16 @@ uint8 a;
 )
 ]
 
+{ #category : #'instance creation' }
+RbColor class >> r: r g: g b: b [
+ ^ self new r: r; g: g; b: b
+]
+
+{ #category : #constants }
+RbColor class >> white [
+ ^ self r: 255 g: 255 b: 255
+]
+
 { #category : #'accessing - structure variables' }
 RbColor >> a [
 	"This method was automatically generated"
