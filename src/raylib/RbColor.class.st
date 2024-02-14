@@ -56,6 +56,12 @@ RbColor >> g: anObject [
 	handle unsignedByteAt: OFFSET_G put: anObject
 ]
 
+{ #category : #initialization }
+RbColor >> initialize [
+	super initialize.
+	self a: 255. "alpha by default should be fully visible"
+]
+
 { #category : #'accessing - structure variables' }
 RbColor >> r [
 	"This method was automatically generated"

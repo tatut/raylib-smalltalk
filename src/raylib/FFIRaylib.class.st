@@ -3,7 +3,8 @@ Class {
 	#superclass : #FFILibrary,
 	#instVars : [
 		'scene',
-		'runProcess'
+		'runProcess',
+		'terminate'
 	],
 	#category : #raylib
 }
@@ -15,7 +16,7 @@ FFIRaylib >> beginDrawing [
 
 { #category : #'as yet unclassified' }
 FFIRaylib >> clearBackground: color [
- ^ self ffiCall: #(void ClearBackground(RbColor color))
+ self ffiCall: #(void ClearBackground(RbColor color))
 ]
 
 { #category : #testing }
@@ -43,6 +44,38 @@ FFIRaylib >> draw: aBlock [
 ]
 
 { #category : #'as yet unclassified' }
+FFIRaylib >> drawCircle: center radius: radius color: color [
+self ffiCall: #(void DrawCircleV(RbVector2 center, float radius, RbColor color) )   
+]
+
+{ #category : #'as yet unclassified' }
+FFIRaylib >> drawFpsX: x y: y [
+ self ffiCall: #(void DrawFPS(int x, int y))
+]
+
+{ #category : #'as yet unclassified' }
+FFIRaylib >> drawLineFrom: fromRbVector2 to: toRbVector2 color: aRbColor [
+ self ffiCall: #(void DrawLineV(RbVector2 fromRbVector2, RbVector2 toRbVector2, RbColor aRbColor) )     
+]
+
+{ #category : #'as yet unclassified' }
+FFIRaylib >> drawLineFromX: fromX fromY: fromY toX: toX toY: toY color: color [
+	self ffiCall: #(void  DrawLine(int fromX, int fromY, int toX, int toY, RbColor color))
+]
+
+{ #category : #'as yet unclassified' }
+FFIRaylib >> drawText: aString x: posX y: posY fontSize: fontSize color: color [  
+ self ffiCall: #( void DrawText(const char *aString, int posX, int posY, int fontSize, RbColor color) )
+ 
+]
+
+{ #category : #'as yet unclassified' }
+FFIRaylib >> drawTriangleV1: v1 v2: v2 v3: v3 color: color [ 
+ "Draw triangle in ccw order."
+ self ffiCall: #(void DrawTriangle(RbVector2 v1, RbVector2 v2, RbVector2 v3, RbColor color)) 
+]
+
+{ #category : #'as yet unclassified' }
 FFIRaylib >> endDrawing [
 	self ffiCall: #(void EndDrawing(void))
 ]
@@ -65,6 +98,11 @@ FFIRaylib >> initWindowWidth: widthPx height: heightPx titled: title [
 { #category : #initialization }
 FFIRaylib >> initialize [ 
   scene := RbNullScene new.
+]
+
+{ #category : #testing }
+FFIRaylib >> isKeyDown: key [ 
+ ^ self ffiCall: #(bool IsKeyDown(int key)) 
 ]
 
 { #category : #testing }
@@ -109,7 +147,7 @@ FFIRaylib >> isWindowState: flag [
 
 { #category : #'as yet unclassified' }
 FFIRaylib >> macLibraryName [ 
- ^ '/opt/homebrew/lib/libraylib.dylib'
+ ^ 'libraylib.dylib'
 ]
 
 { #category : #testing }
@@ -199,11 +237,12 @@ FFIRaylib >> runDev [
  runProcess := [ 
 	[ self windowShouldClose ] whileFalse: [ 
 	   | dur sleep | 
-	   dur := [ 
+	 dur := [ 
 			self pollInputEvents.
+			self swapScreenBuffer.  
 			scene update: self.
 			scene draw: self.
-			self swapScreenBuffer.
+			
 	   ] durationToRun asMilliSeconds.
       sleep := 16 - dur.
       sleep < 0 
@@ -216,9 +255,17 @@ FFIRaylib >> runDev [
 ]
 
 { #category : #running }
+FFIRaylib >> runOnce [
+ 		scene update: self.
+	self draw: [ :_ | 	scene draw: self ].
+
+]
+
+{ #category : #running }
 FFIRaylib >> runProd [ 
  "Run directly in this process, untiil quit" 
-[ self windowShouldClose ] whileFalse: [ 
+ terminate := false.
+[ terminate not and: [ self windowShouldClose not ] ] whileTrue: [ 
 		scene update: self.
 		scene doDraw: self.
 ] 
@@ -259,6 +306,7 @@ FFIRaylib >> targetFPS: fps [
 { #category : #'debugging actions' }
 FFIRaylib >> terminate [ 
   "Stop running the scene process, if any."
+  terminate := true.
   runProcess ifNotNil: [ runProcess terminate ]
 ]
 
