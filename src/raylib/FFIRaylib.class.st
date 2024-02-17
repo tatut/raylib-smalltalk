@@ -90,6 +90,22 @@ FFIRaylib >> frameTime [
  ^ self ffiCall: #(float GetFrameTime(void))
 ]
 
+{ #category : #testing }
+FFIRaylib >> gamepad: gamepad axisMovement: axis [  
+ ^ self ffiCall: #(float GetGamepadAxisMovement(int gamepad, int axis))
+]
+
+{ #category : #testing }
+FFIRaylib >> gamepadAxisCount: gamepad [  
+ ^ self ffiCall: #(int GetGamepadAxisCount(int gamepad))
+]
+
+{ #category : #'as yet unclassified' }
+FFIRaylib >> gamepadButtonPressed [ 
+ ^ self ffiCall: #(int GetGamepadButtonPressed(void))
+
+]
+
 { #category : #'as yet unclassified' }
 FFIRaylib >> initWindowWidth: widthPx height: heightPx titled: title [ 
   self ffiCall: #(void InitWindow(int widthPx, int heightPx, const char *title))
@@ -98,6 +114,31 @@ FFIRaylib >> initWindowWidth: widthPx height: heightPx titled: title [
 { #category : #initialization }
 FFIRaylib >> initialize [ 
   scene := RbNullScene new.
+]
+
+{ #category : #testing }
+FFIRaylib >> isGamepad: gamepad buttonDown: button [  
+ ^ self ffiCall: #(bool IsGamepadButtonDown(int gamepad, int button))
+]
+
+{ #category : #testing }
+FFIRaylib >> isGamepad: gamepad buttonPressed: button [  
+ ^ self ffiCall: #(bool IsGamepadButtonPressed(int gamepad, int button))
+]
+
+{ #category : #testing }
+FFIRaylib >> isGamepad: gamepad buttonReleased: button [  
+ ^ self ffiCall: #(bool IsGamepadButtonReleased(int gamepad, int button))
+]
+
+{ #category : #testing }
+FFIRaylib >> isGamepadAvailable [ 
+ ^ self ffiCall: #(bool IsGamepadAvailable(void))
+]
+
+{ #category : #testing }
+FFIRaylib >> isGamepadAvailable: gamepad [  
+ ^ self ffiCall: #(bool IsGamepadAvailable(int gamepad))
 ]
 
 { #category : #testing }
