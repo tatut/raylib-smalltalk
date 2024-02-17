@@ -70,6 +70,11 @@ FFIRaylib >> drawText: aString x: posX y: posY fontSize: fontSize color: color [
 ]
 
 { #category : #'as yet unclassified' }
+FFIRaylib >> drawTriangleFan: points pointCount: pointCount color: color [
+ ^ self ffiCall: #(void DrawTriangleFan(RbVector2 *points, int pointCount, RbColor color))
+]
+
+{ #category : #'as yet unclassified' }
 FFIRaylib >> drawTriangleV1: v1 v2: v2 v3: v3 color: color [ 
  "Draw triangle in ccw order."
  self ffiCall: #(void DrawTriangle(RbVector2 v1, RbVector2 v2, RbVector2 v3, RbColor color)) 

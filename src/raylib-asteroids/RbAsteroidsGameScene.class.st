@@ -11,24 +11,52 @@ Class {
 }
 
 { #category : #updating }
-RbAsteroidsGameScene >> draw: rb [ 
- | green black rnd |
-green := RbColor new r: 0; g: 255; b: 0; a: 255.
-black := RbColor new r: 0; g:0; b:0; a: 0.
-rnd := Random new.
-rb clearBackground: black; 
-	drawFpsX: 10 y: 10.
-ship render: rb.
-bullets do: [ :b | b render: rb ].
-0 to: 5 do: [ :i | 
-  rb drawText: (rb gamepad: 0 axisMovement: i) asString x: 300 y: (10 + (i * 25)) fontSize: 20 color: (RbColor white) ].
-rb drawText: rb gamepadButtonPressed asString x: 400 y: 20 fontSize: 20 color: RbColor white 
+RbAsteroidsGameScene >> draw: rb [
+	| green black rnd |
+	green := RbColor new
+		         r: 0;
+		         g: 255;
+		         b: 0;
+		         a: 255.
+	black := RbColor new
+		         r: 0;
+		         g: 0;
+		         b: 0;
+		         a: 0.
+	rnd := Random new.
+	rb
+		clearBackground: black;
+		drawFpsX: 10 y: 10.
+	ship render: rb.
+	bullets do: [ :b | b render: rb ].
+	asteroids do: [ :a | a render: rb ].
+	"self drawGamepadInfo: rb"
+]
+
+{ #category : #updating }
+RbAsteroidsGameScene >> drawGamepadInfo: rb [
+
+	0 to: 5 do: [ :i |
+		rb
+			drawText: (rb gamepad: 0 axisMovement: i) asString
+			x: 300
+			y: 10 + (i * 25)
+			fontSize: 20
+			color: RbColor white ].
+	rb
+		drawText: rb gamepadButtonPressed asString
+		x: 400
+		y: 20
+		fontSize: 20
+		color: RbColor white
 ]
 
 { #category : #initialization }
 RbAsteroidsGameScene >> initialize [ 
   ship := RbAsteroidsShip new x: 320 y: 240.
   bullets := OrderedCollection new.
+  asteroids := OrderedCollection new.
+  asteroids add: (RbAsteroidsAsteroid new initAt: (RbVector2 x: 100 y: 100) size: 50).
 ]
 
 { #category : #initialization }
@@ -57,5 +85,6 @@ RbAsteroidsGameScene >> update: rb [
  
  ship update.
  bullets do: #update.
+ asteroids do: #update.
  bullets removeAllSuchThat: #isExpired.
 ]

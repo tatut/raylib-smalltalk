@@ -31,7 +31,19 @@ RbAsteroidsGameEntity >> render: rb [
 
 { #category : #updating }
 RbAsteroidsGameEntity >> update [
- position add: velocity.
+ self updatePosition: [:p | 
+	p add: velocity.
+	p x < 0 ifTrue: [ p x: 640 ].
+	p x > 640 ifTrue: [ p x: 0 ].
+	p y < 0 ifTrue: [ p y: 480 ].
+	p y > 480 ifTrue: [ p y: 0 ].
+ ].
+ 
+]
+
+{ #category : #'as yet unclassified' }
+RbAsteroidsGameEntity >> updatePosition: aBlock [
+  aBlock value: position.
 ]
 
 { #category : #'instance creation' }
