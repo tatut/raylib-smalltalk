@@ -10,7 +10,7 @@ Class {
 { #category : #initialization }
 RbAsteroidsBullet >> initialize [ 
   super initialize.
-  ttl := 500. "one bullet lives for 500 frames / 8,3seconds" 
+  ttl := 120. "one bullet lives for 120 frames / 2seconds" 
 ]
 
 { #category : #testing }

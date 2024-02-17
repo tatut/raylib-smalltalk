@@ -15,6 +15,14 @@ FFIRaylib >> beginDrawing [
 ]
 
 { #category : #'as yet unclassified' }
+FFIRaylib >> checkCollisionPoint: point triangleP1: p1 p2: p2 p3: p3 [  
+ ^ self ffiCall: #( 
+	bool CheckCollisionPointTriangle(
+			RbVector2 point, 
+			RbVector2 p1, RbVector2 p2, RbVector2 p3) )
+]
+
+{ #category : #'as yet unclassified' }
 FFIRaylib >> clearBackground: color [
  self ffiCall: #(void ClearBackground(RbColor color))
 ]

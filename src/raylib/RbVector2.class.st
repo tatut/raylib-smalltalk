@@ -8,6 +8,11 @@ Class {
 	#category : #raylib
 }
 
+{ #category : #copying }
+RbVector2 class >> copy: anRbVector2 [
+ ^ self new x: anRbVector2 x; y: anRbVector2 y
+]
+
 { #category : #'field definition' }
 RbVector2 class >> fieldsDesc [ 
  ^ #( 

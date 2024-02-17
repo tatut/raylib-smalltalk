@@ -10,6 +10,34 @@ Class {
 	#category : #'raylib-asteroids'
 }
 
+{ #category : #'as yet unclassified' }
+RbAsteroidsAsteroid >> collidesWith: pointRbVector2 [
+ | p1 |
+ p1 := RbVector2 copy: (triangleFanPoints at: 1).
+ 2 to: triangleFanPoints size - 2 do: [ :i |
+	| p2 p3 |
+	p2 := RbVector2 copy: (triangleFanPoints at: i).
+	p3 := RbVector2 copy: (triangleFanPoints at: i + 1).
+	(self rb checkCollisionPoint: pointRbVector2 triangleP1: p1  p2: p2  p3: p3)
+		ifTrue: [ ^ true ]
+ ].
+ ^ false 
+]
+
+{ #category : #'as yet unclassified' }
+RbAsteroidsAsteroid >> explode [
+ "Hit by a bullet, explode into smaller pieces (or nothing at all)" 
+ | asteroids count |
+ size <= 20 ifTrue: [ ^ {} ].
+ count := Random new nextIntegerBetween: 2 and: 4.
+ asteroids := OrderedCollection new.
+ 1 to: count do: [ :i |
+	asteroids add: (self class new initAt: (self position) size: (size / 2))
+ ].
+ ^ asteroids
+
+]
+
 { #category : #accessing }
 RbAsteroidsAsteroid >> initAt: positionRbVector2 size: sizeInteger [
  | points rnd |
@@ -41,6 +69,11 @@ RbAsteroidsAsteroid >> initialize [
  velocity
 	x: 1 * (rnd nextBetween: -1.0 and: 1.0);
 	y: 1 * (rnd nextBetween: -1.0 and: 1.0)
+]
+
+{ #category : #accessing }
+RbAsteroidsAsteroid >> position [ 
+ ^ RbVector2 copy: (triangleFanPoints at: 1)
 ]
 
 { #category : #rendering }

@@ -18,8 +18,18 @@ RbAsteroidsGameEntity >> initialize [
 ]
 
 { #category : #accessing }
+RbAsteroidsGameEntity >> position [ 
+ ^ position
+]
+
+{ #category : #accessing }
 RbAsteroidsGameEntity >> position: anRbVector2 [
  position := anRbVector2 
+]
+
+{ #category : #'as yet unclassified' }
+RbAsteroidsGameEntity >> rb [ 
+ ^ FFIRaylib uniqueInstance 
 ]
 
 { #category : #rendering }
@@ -33,6 +43,7 @@ RbAsteroidsGameEntity >> render: rb [
 RbAsteroidsGameEntity >> update [
  self updatePosition: [:p | 
 	p add: velocity.
+	"wrap around if we are going outside the area"
 	p x < 0 ifTrue: [ p x: 640 ].
 	p x > 640 ifTrue: [ p x: 0 ].
 	p y < 0 ifTrue: [ p y: 480 ].
